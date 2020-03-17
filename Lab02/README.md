@@ -45,7 +45,7 @@ stix-shifter translate <MODULE NAME> query "<STIX IDENTITY OBJECT>" "<STIX PATTE
 ```
 Or from source,
 ```
-stix-shifter main.py translate <MODULE NAME> query "<STIX IDENTITY OBJECT>" "<STIX PATTERN>" "<OPTIONS>"
+python main.py translate <MODULE NAME> query "<STIX IDENTITY OBJECT>" "<STIX PATTERN>" "<OPTIONS>"
 ```
 
 For the wp_ithemes connector, to translate a simple query from stix to sql:
