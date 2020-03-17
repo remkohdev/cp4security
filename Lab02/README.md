@@ -48,14 +48,12 @@ Or from source,
 stix-shifter main.py translate <MODULE NAME> query "<STIX IDENTITY OBJECT>" "<STIX PATTERN>" "<OPTIONS>"
 ```
 
-For the wp_ithemes connector:
+For the wp_ithemes connector, to translate a simple query from stix to sql:
 ```
-MODULE=wp_ithemes
-IDENTITY="{}"
-PATTERN="[id:value = 1]"
-OPTIONS=
-python main.py translate $MODULE query $IDENTITY $PATTERN $OPTIONS
-python main.py translate wp_ithemes query "{}" "[id:value = 1]"
+$ python main.py translate wp_ithemes query "{}" "[id:value = 1]"
+=====> query_string:
+["SELECT * FROM tableName WHERE Id = '1'"]
+{'queries': ["SELECT * FROM tableName WHERE Id = '1'"]}
 ```
 
 ### Transmit
