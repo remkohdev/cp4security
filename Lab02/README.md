@@ -30,6 +30,11 @@ Stix-shifter provides 3 functions: `translate` and `transmit` are the primary fu
 
 The `translate` command converts STIX patterns into data source queries and translates data source query results (in JSON format) into STIX observation objects.
 
+Usage:
+```
+$ main.py translate [-h] [-x] [-m DATA_MAPPER] module {results,query,parse,supported_attributes} data_source data [options] [recursion_limit]
+```
+
 A STIX Pattern like,
 ```
 "[id:value = 1]"
@@ -58,21 +63,6 @@ $ python main.py translate wp_ithemes query "{}" "[id:value = 1]"
 
 ### Transmit
 
-
-### Execute
-
-```
-python main.py transmit wp_ithemes '{}' '{"auth": {"username": "<mysql_username>","password": "<mysql_password>", "hostname": "<mysql_host>", "database": "<mysql_database>" }}' ping
-```
-
-
-The `translate` function
-
-Usage:
-```
-$ main.py translate [-h] [-x] [-m DATA_MAPPER] module {results,query,parse,supported_attributes} data_source data [options] [recursion_limit]
-```
-
 The `transmit` function takes in common arguments: the module name, the connection object, and the configuration object. 
 ```
 $ python main.py transmit $MODULE $CONN $AUTH ping
@@ -82,6 +72,33 @@ Usage:
 ```
 $ main.py transmit [-h] module connection configuration {ping,query,results,status,delete,is_async}
 ```
+
+Use MySQL@localhost via docker instead, see https://hub.docker.com/_/mysql
+```
+$ docker run -d --name wp-mysql -v /Users/user1/dev/src/stix-shifter/mysql:/var/lib/mysql -p 6603:3306 -e MYSQL_ROOT_PASSWORD=Passw0rd -e MYSQL_DATABASE=wp_itsec_logs mysql:latest
+$ docker inspect wp-mysql | grep IPAddress
+$ docker run --name phpmyadmin -d --link wp-mysql:db -p 8080:80 phpmyadmin/phpmyadmin 
+```
+
+Run the `transmit ping` command,
+```
+$ python main.py transmit wp_ithemes '{"host":"localhost", "port":"6603"}' '{"auth": {"mysql_username": "root","mysql_password": "Passw0rd", "mysql_hostname": "localhost", "mysql_database": "remkoh_dev_2" } }' ping
+{'success': True, 'response': {'code': 200, 'results': 'Client is Connected to Data Source'}}
+```
+
+Use the results from the `translate query` command, to run the transmit query command,
+```
+python main.py transmit abc '{"host":"localhost", "port":"6603"}' '{"auth": {"mysql_username": "root","mysql_password": "Passw0rd", "mysql_hostname": "localhost", "mysql_database": "remkoh_dev_2" } }' query "SELECT * FROM tableName WHERE Id = '1'"
+```
+
+Run the `transmit results` command,
+```
+$ $ python main.py transmit wp_ithemes '{"host":"localhost", "port":"6603"}' '{"auth": {"mysql_username": "root","mysql_password": "Passw0rd", "mysql_hostname": "localhost", "mysql_database": "remkoh_dev_2" } }' results "SELECT * FROM wp_2d52qn_itsec_logs WHERE Id = '1'" 0 1
+
+{'success': True, 'response': {'code': 200, 'search_id': "SELECT * FROM wp_2d52qn_itsec_logs WHERE Id = '1'", 'results': {'columns': [('id', 8, None, None, None, None, 0, 16931), ('parent_id', 8, None, None, None, None, 0, 33), ('module', 253, None, None, None, None, 0, 16393), ('code', 253, None, None, None, None, 0, 16393), ('data', 252, None, None, None, None, 0, 4113), ('type', 253, None, None, None, None, 0, 16393), ('timestamp', 12, None, None, None, None, 0, 16521), ('init_timestamp', 12, None, None, None, None, 0, 129), ('memory_current', 8, None, None, None, None, 0, 33), ('memory_peak', 8, None, None, None, None, 0, 33), ('url', 253, None, None, None, None, 0, 1), ('blog_id', 8, None, None, None, None, 0, 16393), ('user_id', 8, None, None, None, None, 0, 16425), ('remote_ip', 253, None, None, None, None, 0, 1)], 'eof': {'warning_count': 0, 'status_flag': 1}}}}
+```
+
+### Execute
 
 
 
@@ -238,3 +255,7 @@ python main.py translate wp_ithemes query "{}" "[id:value = '1']"
 Caught exception: wp_ithemes is an unsupported data source. <class 'stix_shifter.stix_translation.src.utils.exceptions.UnsupportedDataSourceException'>
 received exception => UnsupportedDataSourceException: wp_ithemes is an unsupported data source.
 {'success': False, 'code': 'not_implemented', 'error': 'unsupported datasource : wp_ithemes is an unsupported data source.'}
+
+
+Notes:
+Local d
