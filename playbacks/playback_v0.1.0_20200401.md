@@ -133,25 +133,24 @@ Steps:
 
 5. Feature requests, bug reports, issues: https://github.com/remkohdev/cp4security#zenhub
    1. CP4S Epic https://github.com/remkohdev/cp4security/issues/1
-6. 
+
 
 
 Highlights: 
 
 * Created a CP4Security STIX_SHIFTER Connector for WordPress iThemes Security. More than half the world's websites use WordPress to manage content. The most popular security plugin for WordPress is iThemes Security. The Connector implements 2 main commands:
-1. translate, using a mapping file the translate command translates incoming and outgoing messages to connect the CP4Security with the iThemes Security data source, into a native data source query,
-2. transmit, establishes a connection with the security data source, returns the health status, executes the query and returns the query results,
+    1. translate, using a mapping file the translate command translates incoming and outgoing messages to connect with the iThemes Security data source, into a native data source query,
+    2. transmit, establishes a connection with the security data source, returns the health status, executes the query and returns the query results,
 The connector provides the data for the UDS Dashboard in the CP4Security.
-* Playback with IBM Cloud Pak for Security scheduled to showcase progress on CP4Security STIX_SHIFTER Connector for WordPress iThemes Security,
+* Playback scheduled to showcase progress on STIX_SHIFTER Connector for WordPress iThemes Security,
 * Started functional description and technical research for CP4Security Apps. The CP4S App is a dashboard widget that visualizes data retrieved from the connectors.
 * Set up CP4Security squad organization, box folder, Slack channel #cda-squad-security, public Zenhub board
-* Discussed roll-out strategy with the OM team. Phase 1 of the developer enablement content will be rolled out with a preferred partner in collaboration with the OM team. Also coordinating with Ben Peterson, Developer Advocacy and Startup Leader in A/NZ, who has immediate opportunities to roll out the content.
-* Several developer teams have shown interest to contribute to the developer content development. To be continued, as I need to setup the proper repository and zenhub board to facilitate.
+* Setup proper repository and zenhub board to facilitate open source contribution.
 
 
 Next Steps:
 
-* Playback release version 0.1.0 of CP4Security STIX_SHIFTER Connector for WordPress iThemes Security Logs, March 27,
+* Playback release version 0.1.0 of CP4Security STIX_SHIFTER Connector for WordPress iThemes Security Logs,
 * Create a 6 months roadmap for CP4Security development,
 * Create easy to start issues to encourage open source contribution by other developers,
 * Plan v0.2.0
