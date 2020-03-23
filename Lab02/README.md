@@ -13,7 +13,7 @@ The [iThemes Security Pro](https://ithemes.com/security/) is a leading Security 
 * Database Backups,
 * Email Notifications.
 
-Upon installation, `Ithemes Security` will create the following tables:
+Upon installation, `iThemes Security for WordPress` will create the following tables:
 * itsec_distributed_storage
 * itsec_fingerprints
 * itsec_geolocation_cache
@@ -35,6 +35,13 @@ Usage:
 $ main.py translate [-h] [-x] [-m DATA_MAPPER] module {results,query,parse,supported_attributes} data_source data [options] [recursion_limit]
 ```
 
+The `translate` command can be used with the following methods:
+* results
+* query
+* parse
+* supported_attributes
+
+
 A STIX Pattern like,
 ```
 "[id:value = 1]"
@@ -48,12 +55,13 @@ Translation of a query is called in the format of:
 ```
 stix-shifter translate <MODULE NAME> query "<STIX IDENTITY OBJECT>" "<STIX PATTERN>" "<OPTIONS>"
 ```
+
 Or from source,
 ```
 python main.py translate <MODULE NAME> query "<STIX IDENTITY OBJECT>" "<STIX PATTERN>" "<OPTIONS>"
 ```
 
-For the wp_ithemes connector, to translate a simple query from stix to sql:
+For the wp_ithemes connector, to translate a simple query from stix to the native query language of the data source, i.e. sql:
 ```
 $ python main.py translate wp_ithemes query "{}" "[id:value = 1]"
 =====> query_string:
@@ -61,9 +69,17 @@ $ python main.py translate wp_ithemes query "{}" "[id:value = 1]"
 {'queries': ["SELECT * FROM tableName WHERE Id = '1'"]}
 ```
 
+The translated native query can be used as an input parameter in the transmit command.
+
+
+#### Stix Patterns
+
+[timestamp:value > '2020-03-17']
+$ python main.py translate wp_ithemes query "{}" "[timestamp > '2020-03-17']"
+
 ### Transmit
 
-The `transmit` function takes in common arguments: the module name, the connection object, and the configuration object. 
+The `transmit` function takes in common arguments: the module name, the connection object, and the configuration or authentication object. 
 ```
 $ python main.py transmit $MODULE $CONN $AUTH ping
 ```
@@ -73,12 +89,40 @@ Usage:
 $ main.py transmit [-h] module connection configuration {ping,query,results,status,delete,is_async}
 ```
 
-Use MySQL@localhost via docker instead, see https://hub.docker.com/_/mysql
+The `transmit` command can be used with the following methods:
+* ping
+* query (only for asynchronous)
+* results
+* status (only for asynchronous)
+* delete and
+* is_async
+
+
+## Configure stix_shifter to add connector
+
+Add the line `include stix_shifter/stix_translation/src/modules/wp_ithemes/json/*.json` to the `~/MANIFEST.in` file.
+Add the module to the array `TRANSLATION_MODULES = []` on line 15 in `include stix_shifter/stix_translation/stix_translation.py`.
+
+# Run @localhost
+
+Use MySQL@localhost via docker to run the connector on localhost out of the Cloud Pak for Security, see https://hub.docker.com/_/mysql
+
+Run the mysql container and the phpmyadmin container,
 ```
 $ docker run -d --name wp-mysql -v /Users/user1/dev/src/stix-shifter/mysql:/var/lib/mysql -p 6603:3306 -e MYSQL_ROOT_PASSWORD=Passw0rd -e MYSQL_DATABASE=wp_itsec_logs mysql:latest
 $ docker inspect wp-mysql | grep IPAddress
 $ docker run --name phpmyadmin -d --link wp-mysql:db -p 8080:80 phpmyadmin/phpmyadmin 
 ```
+
+Load the sql from the `~/data` folder with test data.
+
+
+
+Use the results from the `translate query` command, to run the transmit query command,
+```
+$ python main.py translate wp_ithemes query "{}" "[id:value = 1]"
+```
+
 
 Run the `transmit ping` command,
 ```
@@ -86,10 +130,6 @@ $ python main.py transmit wp_ithemes '{"host":"localhost", "port":"6603"}' '{"au
 {'success': True, 'response': {'code': 200, 'results': 'Client is Connected to Data Source'}}
 ```
 
-Use the results from the `translate query` command, to run the transmit query command,
-```
-python main.py transmit abc '{"host":"localhost", "port":"6603"}' '{"auth": {"mysql_username": "root","mysql_password": "Passw0rd", "mysql_hostname": "localhost", "mysql_database": "remkoh_dev_2" } }' query "SELECT * FROM tableName WHERE Id = '1'"
-```
 
 Run the `transmit results` command,
 ```
@@ -102,7 +142,9 @@ $ $ python main.py transmit wp_ithemes '{"host":"localhost", "port":"6603"}' '{"
 
 
 
-## itsec_logs
+## Maps
+
+### itsec_logs
 
 A simple `to_stix_map.json` file would be
 ```
@@ -228,8 +270,10 @@ A simple `from_stix_map.json` file would be
 }
 ```
 
-Add the line `include stix_shifter/stix_translation/src/modules/wp_ithemes/json/*.json` to the `~/MANIFEST.in` file.
-Add the module to the array `TRANSLATION_MODULES = []` on line 15 in `include stix_shifter/stix_translation/stix_translation.py`.
+
+## Notes
+
+
 
 ACTION=<"query" or "result">
 PATTERN="[id = 1]"
@@ -250,12 +294,3 @@ python main.py translate $MODULE $ACTION '{"host": "<mysql_host>", "port": <mysq
 
 
 python main.py translate wp_ithemes query "{}" "[id:value = '1']"
-
-python main.py translate wp_ithemes query "{}" "[id:value = '1']"
-Caught exception: wp_ithemes is an unsupported data source. <class 'stix_shifter.stix_translation.src.utils.exceptions.UnsupportedDataSourceException'>
-received exception => UnsupportedDataSourceException: wp_ithemes is an unsupported data source.
-{'success': False, 'code': 'not_implemented', 'error': 'unsupported datasource : wp_ithemes is an unsupported data source.'}
-
-
-Notes:
-Local d
