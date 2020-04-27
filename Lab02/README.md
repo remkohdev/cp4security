@@ -1,4 +1,4 @@
-# Lab02 - Build a STIX_SHIFTER Connector for wp_ithemes logs
+# Lab02 - Build a Translate Module for wp_ithemes connector
 
 In this lab you will build a stix-shifter connector to retrieve logs from the iThemes Security plugin for WordPress. This lab is assuming you are using stix-shifter version 2.x from the `v2-master` branch.
 
