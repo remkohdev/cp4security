@@ -1,0 +1,72 @@
+{
+    "Id": {
+    "fields": {
+        "value": ["id"]
+    }
+    },
+    "ParentId": {
+    "fields": {
+        "value": ["parent_id"]
+    }
+    },
+    "Module": {
+    "fields": {
+        "value": ["module"]
+    }
+    },
+    "Code": {
+    "fields": {
+        "value": ["code"]
+    }
+    },
+    "Data": {
+    "fields": {
+        "value": ["data"]
+    }
+    },
+    "Type": {
+    "fields": {
+        "value": ["type"]
+    }
+    },
+    "Timestamp": {
+    "fields": {
+        "value": ["timestamp"]
+    }
+    },
+    "InitTimestamp": {
+    "fields": {
+        "value": ["init_timestamp"]
+    }
+    },
+    "MemoryCurrent": {
+    "fields": {
+        "value": ["memory_current"]
+    }
+    },
+    "MemoryPeak": {
+    "fields": {
+        "value": ["memory_peak"]
+    }
+    },
+    "Url": {
+    "fields": {
+        "value": ["url"]
+    }
+    },
+    "BlogId": {
+    "fields": {
+        "value": ["blog_id"]
+    }
+    },
+    "UserId": {
+    "fields": {
+        "value": ["user_id"]
+    }
+    },
+    "RemoteIp": {
+    "fields": {
+        "value": ["remote_ip"]
+    }
+    }
+}

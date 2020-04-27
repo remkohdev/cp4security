@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `szirine_com`
+-- Database: `wp_ithemes_testdb`
 --
-CREATE DATABASE IF NOT EXISTS `szirine_com` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `szirine_com`;
+CREATE DATABASE IF NOT EXISTS `wp_ithemes_testdb` DEFAULT CHARACTER SET latin1 COLLATE utf8_unicode_ci;
+USE `wp_ithemes_testdb`;

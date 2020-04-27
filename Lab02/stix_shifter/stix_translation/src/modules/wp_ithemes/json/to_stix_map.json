@@ -1,0 +1,44 @@
+{
+    "id": {
+    "key": "Id"
+    },
+    "parent_id": {
+    "key": "ParentId"
+    },
+    "module": {
+    "key": "Module"
+    },
+    "code": {
+    "key": "Code"
+    },
+    "data": {
+    "key": "Data"
+    },
+    "type": {
+    "key": "Type"
+    },
+    "timestamp": {
+    "key": "Timestamp"
+    },
+    "init_timestamp": {
+    "key": "InitTimestamp"
+    },
+    "memory_current": {
+    "key": "MemoryCurrent"
+    },
+    "Memomemory_peakryPeak": {
+    "key": "MemoryPeak"
+    },
+    "url": {
+    "key": "Url"
+    },
+    "blog_id": {
+    "key": "BlogId"
+    },
+    "user_id": {
+    "key": "UserId"
+    },
+    "remote_ip": {
+    "key": "RemoteIp"
+    }
+}

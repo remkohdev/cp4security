@@ -1,4 +1,11 @@
-USE szirine_com;
+--
+-- Database `wp_ithemes_testdb`
+--
+
+-- CREATE DATABASE IF NOT EXISTS `wp_ithemes_testdb` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+USE `wp_ithemes_testdb`;
+-- COMMIT;
+
 -- --------------------------------------------------------
 
 --
@@ -13,8 +20,8 @@ CREATE TABLE IF NOT EXISTS `wp_itsec_logs` (
   `code` varchar(100) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT '',
   `data` longtext COLLATE utf8mb4_unicode_520_ci NOT NULL,
   `type` varchar(20) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'notice',
-  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `init_timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `timestamp` datetime NOT NULL,
+  `init_timestamp` datetime NOT NULL,
   `memory_current` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
   `memory_peak` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
   `url` varchar(500) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT '',
