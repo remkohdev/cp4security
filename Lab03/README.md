@@ -32,6 +32,7 @@ The `transmit` command can be used with the following methods:
 * delete and
 * is_async
 
+### Create the Translate Module
 
 1. Create a New Folder,
 
@@ -52,38 +53,37 @@ The `transmit` command can be used with the following methods:
 
     Create a new file `wp_ithemes_connector.py`,
     ```
-    $ echo ' 
-        from ..base.base_connector import BaseConnector
-        from .....utils.error_response import ErrorResponder
-        from .mysql_connection_client import MySQLConnectionClient
-        from .mysql_error_mapper import ErrorMapper
-        from .wp_ithemes_ping_connector import WPiThemesPingConnector
-        from .wp_ithemes_results_connector import WPiThemesResultsConnector
-        import json
+    $ echo 'from ..base.base_connector import BaseConnector
+    from .....utils.error_response import ErrorResponder
+    from .mysql_connection_client import MySQLConnectionClient
+    from .mysql_error_mapper import ErrorMapper
+    from .wp_ithemes_ping_connector import WPiThemesPingConnector
+    from .wp_ithemes_results_connector import WPiThemesResultsConnector
+    import json
 
-        class UnexpectedResponseException(Exception): pass
+    class UnexpectedResponseException(Exception): pass
 
-        class Connector(BaseConnector):
-            def __init__(self, connection, configuration):
-                self.mysql_connection_client = MySQLConnectionClient(connection, configuration)
-                self.is_async = False
-                self.ping_connector = WPiThemesPingConnector(self.mysql_connection_client)
-                self.results_connector = WPiThemesResultsConnector(self.mysql_connection_client)
-                self.status_connector = self
-                self.query_connector = self
+    class Connector(BaseConnector):
+        def __init__(self, connection, configuration):
+            self.mysql_connection_client = MySQLConnectionClient(connection, configuration)
+            self.is_async = False
+            self.ping_connector = WPiThemesPingConnector(self.mysql_connection_client)
+            self.results_connector = WPiThemesResultsConnector(self.mysql_connection_client)
+            self.status_connector = self
+            self.query_connector = self
 
-            def create_query_connection(self, query):
-                return {"success": True, "search_id": query}
+        def create_query_connection(self, query):
+            return {"success": True, "search_id": query}
 
-            def create_status_connection(self, search_id):
-                return {"success": True, "status": "COMPLETED", "progress": 100}
+        def create_status_connection(self, search_id):
+            return {"success": True, "status": "COMPLETED", "progress": 100}
     ' > wp_ithemes_connector.py
     ```
 
     The `Connector` class initializes a `MySQLConnectionClient`, and implements the `ping`, `results`, `status`, and `query` methods. 
     The `Connector` class also loads an `ErrorMapper` class, that maps MySQL and MariaDB error codes to custom messages.
 
-1. Create the MySQLConnectionClient,
+2. Create the MySQLConnectionClient,
 
     Create a new file `mysql_connection_client.py` and add the following code,
     ```
@@ -121,7 +121,7 @@ The `transmit` command can be used with the following methods:
 
     The MySQLConnectionClient implements methods to test the connection to the data source and a method to execute queries, which were translated by the `translate` command.
 
-1. Implement the Ping Connector,
+3. Implement the Ping Connector,
 
     Now our `Connector` class in `wp_ithemes_connector.py` is initialized and has an instance of the data source connection manager, we can implement the `ping` command. The `ping` function is defined by the `WPiThemesPingConnector` that implements the `BasePing` class.
 
@@ -156,7 +156,7 @@ The `transmit` command can be used with the following methods:
 
     The `ping` function calls the `ping_box()` function of the `MySQLConnectionClient` class, which tests the connection to the data source.
 
-1. Implement the Results Connector,
+4. Implement the Results Connector,
 
     The last connector to implement is the `WPiThemesResultsConnector` that should handle the `create_results_connection` method. This method executes the query against the data source and returns the result set. 
 
@@ -192,7 +192,7 @@ The `transmit` command can be used with the following methods:
     ` > wp_ithemes_results_connector.py
     ```
     
-1. Add Error Mapping,
+5. Add Error Mapping,
 
     First copy the `ErrorMapper` and Error Mapping from the `synchronous_dummy` module,
     ```
@@ -248,14 +248,14 @@ The `transmit` command can be used with the following methods:
     }
     ```
 
-1. Register the Transmit Module,
+6. Register the Transmit Module,
 
     Edit the file `~/stix_shifter/stix_transmission/stix_transmission.py`, and register the `wp_ithemes` to the `TRANSMISSION_MODULES` array on line 4,
     ```
     TRANSMISSION_MODULES = ['async_dummy', 'synchronous_dummy', 'qradar', 'splunk', 'bigfix', 'csa', 'aws_security_hub', 'carbonblack', 'elastic_ecs', 'proxy', 'stix_bundle', 'msatp', 'security_advisor', 'guardium', 'aws_cloud_watch_logs', 'azure_sentinel', 'wp_ithemes']
     ```
 
-1. Test the Transmit Module,
+7. Test the Transmit Module,
 
     The `translate query` command returned a translated native query. Use the native query as input parameter in the transmit command.
     ```
