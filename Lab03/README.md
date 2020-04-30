@@ -163,7 +163,7 @@ The `transmit` command can be used with the following methods:
 
     Create a new file `wp_ithemes_results_connector.py` and add the following code to implement a `BaseResultsConnector` class,
     ```
-    echo 'from ..base.base_results_connector import BaseResultsConnector
+    $ echo 'from ..base.base_results_connector import BaseResultsConnector
     from .mysql_connection_client import MySQLConnectionClient
     import json
     from .....utils.error_response import ErrorResponder
@@ -193,7 +193,7 @@ The `transmit` command can be used with the following methods:
     ' > wp_ithemes_results_connector.py
     ```
     
-5. Add Error Mapping,
+1. Add Error Mapping,
 
     First copy the `ErrorMapper` and Error Mapping from the `synchronous_dummy` module,
     ```
@@ -249,14 +249,14 @@ The `transmit` command can be used with the following methods:
     }
     ```
 
-6. Register the Transmit Module,
+1. Register the Transmit Module,
 
     Edit the file `~/stix_shifter/stix_transmission/stix_transmission.py`, and register the `wp_ithemes` to the `TRANSMISSION_MODULES` array on line 4,
     ```
     TRANSMISSION_MODULES = ['async_dummy', 'synchronous_dummy', 'qradar', 'splunk', 'bigfix', 'csa', 'aws_security_hub', 'carbonblack', 'elastic_ecs', 'proxy', 'stix_bundle', 'msatp', 'security_advisor', 'guardium', 'aws_cloud_watch_logs', 'azure_sentinel', 'wp_ithemes']
     ```
 
-7. Test the Transmit Module,
+1. Test the Transmit Module,
 
     The `translate query` command returned a translated native query. Use the native query as input parameter in the transmit command.
     ```
