@@ -83,11 +83,11 @@ The `transmit` command can be used with the following methods:
     The `Connector` class initializes a `MySQLConnectionClient`, and implements the `ping`, `results`, `status`, and `query` methods. 
     The `Connector` class also loads an `ErrorMapper` class, that maps MySQL and MariaDB error codes to custom messages.
 
-2. Create the MySQLConnectionClient,
+1. Create the MySQLConnectionClient,
 
     Create a new file `mysql_connection_client.py` and add the following code,
     ```
-    echo `import mysql.connector
+    $ echo 'import mysql.connector
 
     class MySQLConnectionClient():
 
@@ -116,12 +116,12 @@ The `transmit` command can be used with the following methods:
         def run_search(self, query_expression, offset=None, length=None):
             results = self.client.cmd_query(query_expression)
             return {"code": 200, "search_id": query_expression, "results": results }
-    ` > mysql_connection_client.py
+    ' > mysql_connection_client.py
     ```
 
     The MySQLConnectionClient implements methods to test the connection to the data source and a method to execute queries, which were translated by the `translate` command.
 
-3. Implement the Ping Connector,
+1. Implement the Ping Connector,
 
     Now our `Connector` class in `wp_ithemes_connector.py` is initialized and has an instance of the data source connection manager, we can implement the `ping` command. The `ping` function is defined by the `WPiThemesPingConnector` that implements the `BasePing` class.
 
