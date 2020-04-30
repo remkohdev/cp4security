@@ -225,7 +225,7 @@ The `transmit` command can be used with the following methods:
         TRANSMISSION_REMOTE_SYSTEM_IS_UNAVAILABLE = 'service_unavailable'
     ```
 
-    Edit the file `mysql_error_mapper.py` and change the `error_mapping` object to map MySQL error codes to the stix-shifter connector error codes, to the following `error_mapping` object:
+    Edit the file `mysql_error_mapper.py` and change the `error_mapping` object on line 4 to map MySQL error codes to the stix-shifter connector error codes, to the following `error_mapping` object:
     ```
     # See: https://mariadb.com/kb/en/mariadb-error-codes/
     error_mapping = {
@@ -253,10 +253,13 @@ The `transmit` command can be used with the following methods:
 
     Edit the file `~/stix_shifter/stix_transmission/stix_transmission.py`, and register the `wp_ithemes` to the `TRANSMISSION_MODULES` array on line 4,
     ```
-    TRANSMISSION_MODULES = ['async_dummy', 'synchronous_dummy', 'qradar', 'splunk', 'bigfix', 'csa', 'aws_security_hub', 'carbonblack', 'elastic_ecs', 'proxy', 'stix_bundle', 'msatp', 'security_advisor', 'guardium', 'aws_cloud_watch_logs', 'azure_sentinel', 'wp_ithemes']
+    TRANSMISSION_MODULES = ['async_dummy', 'synchronous_dummy', 'qradar',
+    'splunk', 'bigfix', 'csa', 'aws_security_hub', 'carbonblack',
+    'elastic_ecs', 'proxy', 'stix_bundle', 'msatp', 'security_advisor',
+    'guardium', 'aws_cloud_watch_logs', 'azure_sentinel', 'wp_ithemes']
     ```
 
-1. Test the Transmit Module,
+2. Test the Transmit Module,
 
     The `translate query` command returned a translated native query. Use the native query as input parameter in the transmit command.
     ```
