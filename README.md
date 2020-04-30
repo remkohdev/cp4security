@@ -19,6 +19,7 @@ The current labs cover:
 
 * Lab01 - Developer Environment Setup for the Labs, see [Lab01](./Lab01/README.md),
 * Lab02 - Build a Translate Module for wp_ithemes Connector, see [Lab02](./Lab02/README.md),
+* Lab03 - Build a Transmit Module for wp_ithemes Connector, see [Lab03](./Lab03/README.md),
 
 # Contribute
 

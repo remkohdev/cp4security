@@ -1,9 +1,9 @@
-# Lab02 - Build a Translate Module for wp_ithemes connector
+# Lab02 - Build a Translate Module for wp_ithemes Connector
 
 In this lab you will build a stix-shifter connector to retrieve logs from the iThemes Security plugin for WordPress. This lab is assuming you are using stix-shifter version 2.x from the `v2-master` branch.
 
 ```
-$ git clone -b v2-master https://github.com/remkohdev/stix-shifter.git
+$ git clone -b v2-master https://github.com/opencybersecurityalliance/stix-shifter.git
 $ cd stix-shifter
 ```
 
@@ -38,17 +38,31 @@ Stix-shifter provides 3 functions:
 
 In v2 of stix-shifter, you have to add 2 modules, 1 module for the `translate` command, and 1 module for the `transmit` command.
 
-Create a new folder `stix_shifter/stix_translation/src/modules/wp_ithemes` for the `stix_translation` module and a new folder `stix_shifter/stix_transmission/src/modules/wp_ithemes` for the `stix_transmission` module,
-```
-$ mkdir -p stix_shifter/stix_translation/src/modules/wp_ithemes
-$ mkdir -p stix_shifter/stix_transmission/src/modules/wp_ithemes
-```
-
 ### Translate
 
 The `translate` command converts STIX patterns into data source queries and translates data source query results (in JSON format) into STIX observation objects.
 
-1. Create a Python Module
+The `translate` command can be used with the following methods:
+* results
+* query
+* parse
+* supported_attributes
+
+This version of the connector only supports the `query` command.
+
+Usage:
+```
+$ main.py translate [-h] [-x] [-m DATA_MAPPER] module {results,query,parse,supported_attributes} data_source data [options] [recursion_limit]
+```
+
+1. Create a New Folder,
+
+    Create a new folder `stix_shifter/stix_translation/src/modules/wp_ithemes` for the `stix_translation` module,
+    ```
+    $ mkdir -p stix_shifter/stix_translation/src/modules/wp_ithemes
+    ```
+
+1. Create a Python Module for Translate
 
     To create the translate directory into a Python module, add a `__init__.py` file.
     ```
@@ -295,19 +309,6 @@ The `translate` command converts STIX patterns into data source queries and tran
     ```
 
 1. Test the Translate Module,
-
-    The `translate` command can be used with the following methods:
-    * results
-    * query
-    * parse
-    * supported_attributes
-
-    This version of the connector only supports the `query` command.
-
-    Usage:
-    ```
-    $ main.py translate [-h] [-x] [-m DATA_MAPPER] module {results,query,parse,supported_attributes} data_source data [options] [recursion_limit]
-    ```
 
     For the wp_ithemes connector, to translate a simple query from stix to the native query language of the data source, i.e. sql:
     ```
