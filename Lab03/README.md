@@ -118,6 +118,7 @@ The `transmit` command can be used with the following methods:
             return {"code": 200, "search_id": query_expression, "results": results }
     ' > mysql_connection_client.py
     ```
+    Correct indentation from copy-pasting where necessary.
 
     The MySQLConnectionClient implements methods to test the connection to the data source and a method to execute queries, which were translated by the `translate` command.
 
@@ -127,7 +128,7 @@ The `transmit` command can be used with the following methods:
 
     Create a new file `wp_ithemes_ping_connector.py` and add the code to create the `WPiThemesPingConnector`,
     ```
-    echo `from ..base.base_ping import BasePing
+    $ echo 'from ..base.base_ping import BasePing
     from .mysql_connection_client import MySQLConnectionClient
     import json
     from .....utils.error_response import ErrorResponder
@@ -151,18 +152,18 @@ The `transmit` command can be used with the following methods:
                 ErrorResponder.fill_error(return_obj, response_dict, [errMessage])
 
             return return_obj
-    ` > wp_ithemes_ping_connector.py
+    ' > wp_ithemes_ping_connector.py
     ```
 
     The `ping` function calls the `ping_box()` function of the `MySQLConnectionClient` class, which tests the connection to the data source.
 
-4. Implement the Results Connector,
+1. Implement the Results Connector,
 
     The last connector to implement is the `WPiThemesResultsConnector` that should handle the `create_results_connection` method. This method executes the query against the data source and returns the result set. 
 
     Create a new file `wp_ithemes_results_connector.py` and add the following code to implement a `BaseResultsConnector` class,
     ```
-    echo `from ..base.base_results_connector import BaseResultsConnector
+    echo 'from ..base.base_results_connector import BaseResultsConnector
     from .mysql_connection_client import MySQLConnectionClient
     import json
     from .....utils.error_response import ErrorResponder
@@ -189,7 +190,7 @@ The `transmit` command can be used with the following methods:
                 return_obj['success'] = False
 
             return return_obj
-    ` > wp_ithemes_results_connector.py
+    ' > wp_ithemes_results_connector.py
     ```
     
 5. Add Error Mapping,
