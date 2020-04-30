@@ -268,27 +268,73 @@ The `transmit` command can be used with the following methods:
     $ pip3 install -r requirements-dev.txt
     ...
     Installing collected packages: dnspython, protobuf, mysql-connector-python
-    Successfully installed dnspython-1.16.0 mysql-connector-python-8.0.19 protobuf-3.6.1
+    Successfully installed dnspython-1.16.0 mysql-connector-python-8.0.19 
+    protobuf-3.6.1
     ```
 
 1. Test the Transmit Module,
 
     Test the data source connection using the `transmit ping` command,
     ```
-    $ python3 main.py transmit wp_ithemes '{"host":"123.45.123.123", "port":"30306"}' '{"auth": {"mysql_username": "user1","mysql_password": "Passw0rd", "mysql_hostname": "123.45.123.123", "mysql_database": "wp_test_db" } }' ping
+    $ python3 main.py transmit wp_ithemes '{"host":"123.45.123.123", 
+    "port":"30306"}' '{"auth": {"mysql_username": "user1","mysql_password": 
+    "Passw0rd", "mysql_hostname": "123.45.123.123", "mysql_database": 
+    "wp_test_db" } }' ping
 
-    {'success': True, 'response': {'code': 200, 'results': 'Client is Connected to Data Source'}}
+    {'success': True, 'response': {'code': 200, 'results': 'Client is 
+    Connected to Data Source'}}
     ```
 
-    The `translate query` command returned a translated native query. Use the translated native query as input parameter in the `transmit results` command, using `offset=0` and `length=1`.
+    The `translate query` command returned a translated native query. Use the 
+    translated native query as input parameter in the `transmit results` 
+    command, using `offset=0` and `length=1`.
     ```
     $ python3 main.py transmit wp_ithemes '{"host":"123.45.123.123", "port":"30306"}' '{"auth": {"mysql_username": "user1","mysql_password": "Passw0rd", "mysql_hostname": "123.45.123.123", "mysql_database": "wp_test_db" } }' results "SELECT * FROM wp_itsec_logs WHERE Module = 'brute_force'" 0 1
 
-    {'success': True, 'response': {'code': 200, 'search_id': "SELECT * FROM wp_itsec_logs WHERE Module = 'brute_force' limit 1 offset 0", 'results': [(30148, 0, 'brute_force', 'invalid-login::username-szirine.com', 'a:5:{s:7:"details";a:2:{s:6:"source";s:6:"xmlrpc";s:20:"authentication_types";a:1:{i:0;s:21:"username_and_password";}}s:4:"user";O:8:"WP_Error":2:{s:6:"errors";a:1:{s:16:"invalid_username";a:1:{i:0;s:56:"Unknown username. Check again or try your email address.";}}s:10:"error_data";a:0:{}}s:8:"username";s:11:"szirine.com";s:7:"user_id";i:0;s:6:"SERVER";a:37:{s:15:"SERVER_SOFTWARE";s:6:"Apache";s:11:"REQUEST_URI";s:11:"/xmlrpc.php";s:4:"PATH";s:60:"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin";s:11:"SCRIPT_NAME";s:11:"/xmlrpc.php";s:12:"QUERY_STRING";s:0:"";s:14:"REQUEST_METHOD";s:4:"POST";s:15:"SERVER_PROTOCOL";s:8:"HTTP/1.1";s:17:"GATEWAY_INTERFACE";s:7:"CGI/1.1";s:11:"REMOTE_PORT";s:5:"38018";s:15:"SCRIPT_FILENAME";s:38:"/home/dh_23wzed/szirine.com/xmlrpc.php";s:12:"SERVER_ADMIN";s:21:"webmaster@szirine.com";s:21:"CONTEXT_DOCUMENT_ROOT";s:27:"/home/dh_23wzed/szirine.com";s:14:"CONTEXT_PREFIX";s:0:"";s:14:"REQUEST_SCHEME";s:4:"http";s:13:"DOCUMENT_ROOT";s:27:"/home/dh_23wzed/szirine.com";s:11:"REMOTE_ADDR";s:14:"64.202.188.205";s:11:"SERVER_PORT";s:2:"80";s:11:"SERVER_ADDR";s:14:"173.236.188.87";s:11:"SERVER_NAME";s:11:"szirine.com";s:16:"SERVER_SIGNATURE";s:0:"";s:12:"CONTENT_TYPE";s:8:"text/xml";s:9:"HTTP_HOST";s:11:"szirine.com";s:15:"HTTP_USER_AGENT";s:90:"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.1) Gecko/2008070208 Firefox/3.0.1";s:11:"HTTP_ACCEPT";s:74:"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";s:15:"HTTP_CONNECTION";s:5:"close";s:20:"HTTP_ACCEPT_ENCODING";s:23:"identity, gzip, deflate";s:14:"CONTENT_LENGTH";s:3:"252";s:7:"DH_USER";s:9:"dh_23wzed";s:14:"ds_id_40644047";s:0:"";s:4:"dsid";s:8:"40644047";s:10:"SCRIPT_URI";s:29:"http://szirine.com/xmlrpc.php";s:10:"SCRIPT_URL";s:11:"/xmlrpc.php";s:9:"UNIQUE_ID";s:27:"XmvmbztjbkBzgs0Jzi2SmAAAAAk";s:9:"FCGI_ROLE";s:9:"RESPONDER";s:8:"PHP_SELF";s:11:"/xmlrpc.php";s:18:"REQUEST_TIME_FLOAT";s:15:"1584129647.1169";s:12:"REQUEST_TIME";s:10:"1584129647";}}', 'notice', datetime.datetime(2020, 3, 13, 20, 0, 47), datetime.datetime(2020, 3, 13, 20, 0, 47), 45156968, 45350320, 'http://szirine.com/xmlrpc.php', 1, 0, '64.202.188.205')]}}
+    {'success': True, 'response': {'code': 200, 'search_id': "SELECT * FROM 
+    wp_itsec_logs WHERE Module = 'brute_force' limit 1 offset 0", 'results': 
+    [(30148, 0, 'brute_force', 'invalid-login::username-szirine.com', 
+    'a:5:{s:7:"details";a:2:{s:6:"source";s:6:"xmlrpc"; 
+    s:20:"authentication_types";a:1:{i:0;s:21:"username_and_password";}} 
+    s:4:"user";O:8:"WP_Error":2:{s:6:"errors";a:1:{s:16:"invalid_username"a:1: 
+    {i:0;s:56:"Unknown username. Check again or try your email address.";}} 
+    s:10:"error_data";a:0:{}}s:8:"username";s:11:"szirine.com";s:7:"user_id"; 
+    i:0;s:6:"SERVER";a:37:{s:15:"SERVER_SOFTWARE";s:6:"Apache"; 
+    s:11:"REQUEST_URI";s:11:"/xmlrpc.php";s:4:"PATH";s:60:"/usr/local/sbin:/ 
+    usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin";s:11:"SCRIPT_NAME";s:11:"/ 
+    xmlrpc.php";s:12:"QUERY_STRING";s:0:"";s:14:"REQUEST_METHOD";s:4:"POST"; 
+    s:15:"SERVER_PROTOCOL";s:8:"HTTP/1.1";s:17:"GATEWAY_INTERFACE";s:7:"CGI/1. 
+    1";s:11:"REMOTE_PORT";s:5:"38018";s:15:"SCRIPT_FILENAME";s:38:"/home/ 
+    dh_23wzed/szirine.com/xmlrpc.php";s:12:"SERVER_ADMIN"; 
+    s:21:"webmaster@szirine.com";s:21:"CONTEXT_DOCUMENT_ROOT";s:27:"/home/ 
+    dh_23wzed/szirine.com";s:14:"CONTEXT_PREFIX";s:0:"";s:14:"REQUEST_SCHEME"; 
+    s:4:"http";s:13:"DOCUMENT_ROOT";s:27:"/home/dh_23wzed/szirine.com"; 
+    s:11:"REMOTE_ADDR";s:14:"64.202.188.205";s:11:"SERVER_PORT";s:2:"80"; 
+    s:11:"SERVER_ADDR";s:14:"173.236.188.87";s:11:"SERVER_NAME";s:11:"szirine. 
+    com";s:16:"SERVER_SIGNATURE";s:0:"";s:12:"CONTENT_TYPE";s:8:"text/xml"; 
+    s:9:"HTTP_HOST";s:11:"szirine.com";s:15:"HTTP_USER_AGENT";s:90:"Mozilla/5. 
+    0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.1) Gecko/2008070208Firefox/ 
+    3.0.1";s:11:"HTTP_ACCEPT";s:74:"text/html,application/xhtml+xml, 
+    application/xml;q=0.9,image/webp,*/*;q=0.8";s:15:"HTTP_CONNECTION"; 
+    s:5:"close";s:20:"HTTP_ACCEPT_ENCODING";s:23:"identity, gzip, deflate"; 
+    s:14:"CONTENT_LENGTH";s:3:"252";s:7:"DH_USER";s:9:"dh_23wzed"; 
+    s:14:"ds_id_40644047";s:0:"";s:4:"dsid";s:8:"40644047";s:10:"SCRIPT_URI"; 
+    s:29:"http://szirine.com/xmlrpc.php";s:10:"SCRIPT_URL";s:11:"/xmlrpc.php"; 
+    s:9:"UNIQUE_ID";s:27:"XmvmbztjbkBzgs0Jzi2SmAAAAAk";s:9:"FCGI_ROLE"; 
+    s:9:"RESPONDER";s:8:"PHP_SELF";s:11:"/xmlrpc.php"; 
+    s:18:"REQUEST_TIME_FLOAT";s:15:"1584129647.1169";s:12:"REQUEST_TIME"; 
+    s:10:"1584129647";}}', 'notice', datetime.datetime(2020, 3, 13, 20, 0, 47) 
+    , datetime.datetime(2020, 3, 13, 20, 0, 47), 45156968, 45350320, 'http:// 
+    szirine.com/xmlrpc.php', 1, 0, '64.202.188.205')]}}
     ```
 
-    To return more results change the `length`, to change the position of the cursor, change the `offset` command. For example to return the 2nd and 3rd result from the query, use `offset=1` and `length=2`,
+    To return more results change the `length`, to change the position of the
+    cursor, change the `offset` command. For example to return the 2nd and 3rd
+    result from the query, use `offset=1` and `length=2`,
     ```
-    $ python3 main.py transmit wp_ithemes '{"host":"123.45.123.123", "port":"30306"}' '{"auth": {"mysql_username": "user1","mysql_password": "Passw0rd", "mysql_hostname": "123.45.123.123", "mysql_database": "wp_test_db" } }' results "SELECT * FROM wp_itsec_logs WHERE Module = 'brute_force'" 1 2
-
+    $ python3 main.py transmit wp_ithemes '{"host":"123.45.123.123",
+    "port":"30306"}' '{"auth": {"mysql_username": "user1","mysql_password": 
+    "Passw0rd", "mysql_hostname": "123.45.123.123", "mysql_database": 
+    "wp_test_db" } }' results "SELECT * FROM wp_itsec_logs WHERE Module = 
+    'brute_force'" 1 2
     ```
