@@ -93,12 +93,12 @@ The `transmit` command can be used with the following methods:
 
         def __init__(self, connection, configuration):
             # https://dev.mysql.com/doc/connector-python/en/connector-python-connectargs.html
-            mysql_host = connection.get('host')
-            mysql_port = connection.get('port')
-            auth = configuration.get('auth')
-            mysql_database = auth.get('mysql_database')
-            mysql_username = auth.get('mysql_username')
-            mysql_password = auth.get('mysql_password')
+            mysql_host = connection.get("host")
+            mysql_port = connection.get("port")
+            auth = configuration.get("auth")
+            mysql_database = auth.get("mysql_database")
+            mysql_username = auth.get("mysql_username")
+            mysql_password = auth.get("mysql_password")
 
             # See https://dev.mysql.com/downloads/connector/python/
             self.client = mysql.connector.MySQLConnection(
@@ -113,9 +113,14 @@ The `transmit` command can be used with the following methods:
             # See: https://dev.mysql.com/doc/connector-python/en/connector-python-api-mysqlconnection-is-connected.html
             return self.client.is_connected() 
 
-        def run_search(self, query_expression, offset=None, length=None):
-            results = self.client.cmd_query(query_expression)
-            return {"code": 200, "search_id": query_expression, "results": results }
+        def run_search(self, query_expression, offset, length):
+            query = "{} limit {} offset {}".format(query_expression, length, offset)
+
+            cursor = self.client.cursor()
+            cursor.execute(query)
+            results = cursor.fetchall()
+
+            return {"code": 200, "search_id": query, "results": results }
     ' > mysql_connection_client.py
     ```
     Correct indentation from copy-pasting where necessary.
@@ -143,11 +148,11 @@ The `transmit` command can be used with the following methods:
             isConnected = self.mysql_connection_client.ping_box()
 
             if isConnected:
-                return_obj['success'] = True
-                return_obj['response'] = {"code": 200, "results": "Client is Connected to Data Source"}
+                return_obj["success"] = True
+                return_obj["response"] = {"code": 200, "results": "Client is Connected to Data Source"}
             else:
-                return_obj['success'] = False
-                errMessage = 'Error: Client could not connect to Data Source'
+                return_obj["success"] = False
+                errMessage = "Error: Client could not connect to Data Source"
                 print(errMessage)
                 ErrorResponder.fill_error(return_obj, response_dict, [errMessage])
 
@@ -173,21 +178,18 @@ The `transmit` command can be used with the following methods:
             self.mysql_connection_client = mysql_connection_client
 
         def create_results_connection(self, search_id, offset, length):
-            # todo: enable offset
-            min_range = offset
-            max_range = offset + length
             query_expression = search_id
 
             return_obj = dict()
             try:
-                response = self.mysql_connection_client.run_search(query_expression, offset=None, length=None)
-                return_obj['success'] = True
-                return_obj['response'] = response
+                response = self.mysql_connection_client.run_search(query_expression, offset=offset, length=length)
+                return_obj["success"] = True
+                return_obj["response"] = response
             except Exception as err:
-                errMessage = 'error when searching datasource {}:'.format(err)
+                errMessage = "Error searching datasource {}:".format(err)
                 print(errMessage)
                 ErrorResponder.fill_error(return_obj, response_dict, [errMessage])
-                return_obj['success'] = False
+                return_obj["success"] = False
 
             return return_obj
     ' > wp_ithemes_results_connector.py
@@ -229,22 +231,22 @@ The `transmit` command can be used with the following methods:
     ```
     # See: https://mariadb.com/kb/en/mariadb-error-codes/
     error_mapping = {
-        1012: 'Cannot read record in system table'
-        1013: 'Cannot get status'
-        1032: 'Cannot find record'
-        1043: 'Bad handshake'
-        1044: 'Access denied for user to database'
-        1045: 'Access denied for user (using password)'
-        1046: 'No database selected'
-        1047: 'Unknown command'
-        1051: 'Unknown table'
-        1102: 'Unknown database'
-        1103: 'Incorrect table name'
-        1105: 'Unknown error'
-        1109: 'Incorrect parameters in procedure'
-        1146: 'Table does not exist'
-        1251: ErrorCode.TRANSMISSION_AUTH_SSL
-        1342: ErrorCode.TRANSMISSION_QUERY_PARSING_ERROR
+        1012: 'Cannot read record in system table',
+        1013: 'Cannot get status',
+        1032: 'Cannot find record',
+        1043: 'Bad handshake',
+        1044: 'Access denied for user to database',
+        1045: 'Access denied for user (using password)',
+        1046: 'No database selected',
+        1047: 'Unknown command',
+        1051: 'Unknown table',
+        1102: 'Unknown database',
+        1103: 'Incorrect table name',
+        1105: 'Unknown error',
+        1109: 'Incorrect parameters in procedure',
+        1146: 'Table does not exist',
+        1251: ErrorCode.TRANSMISSION_AUTH_SSL,
+        1342: ErrorCode.TRANSMISSION_QUERY_PARSING_ERROR,
         1398: ErrorCode.TRANSMISSION_INVALID_PARAMETER
     }
     ```
@@ -259,219 +261,34 @@ The `transmit` command can be used with the following methods:
     'guardium', 'aws_cloud_watch_logs', 'azure_sentinel', 'wp_ithemes']
     ```
 
-2. Test the Transmit Module,
+1. Install dependencies
 
-    The `translate query` command returned a translated native query. Use the native query as input parameter in the transmit command.
+    Add `mysql-connector-python>=8.0.19` to the `requirements.txt` dependencies for Python. 
     ```
-    $ python3 main.py translate wp_ithemes query "{}" "[Module:value = 'brute_force']" '{"tableName": "wp_itsec_logs"}'
-    {'queries': ["SELECT * FROM wp_itsec_logs WHERE module = 'brute_force'"]}
+    $ pip3 install -r requirements-dev.txt
+    ...
+    Installing collected packages: dnspython, protobuf, mysql-connector-python
+    Successfully installed dnspython-1.16.0 mysql-connector-python-8.0.19 protobuf-3.6.1
     ```
 
-    
+1. Test the Transmit Module,
 
+    Test the data source connection using the `transmit ping` command,
+    ```
+    $ python3 main.py transmit wp_ithemes '{"host":"123.45.123.123", "port":"30306"}' '{"auth": {"mysql_username": "user1","mysql_password": "Passw0rd", "mysql_hostname": "123.45.123.123", "mysql_database": "wp_test_db" } }' ping
 
+    {'success': True, 'response': {'code': 200, 'results': 'Client is Connected to Data Source'}}
+    ```
 
+    The `translate query` command returned a translated native query. Use the translated native query as input parameter in the `transmit results` command, using `offset=0` and `length=1`.
+    ```
+    $ python3 main.py transmit wp_ithemes '{"host":"123.45.123.123", "port":"30306"}' '{"auth": {"mysql_username": "user1","mysql_password": "Passw0rd", "mysql_hostname": "123.45.123.123", "mysql_database": "wp_test_db" } }' results "SELECT * FROM wp_itsec_logs WHERE Module = 'brute_force'" 0 1
 
+    {'success': True, 'response': {'code': 200, 'search_id': "SELECT * FROM wp_itsec_logs WHERE Module = 'brute_force' limit 1 offset 0", 'results': [(30148, 0, 'brute_force', 'invalid-login::username-szirine.com', 'a:5:{s:7:"details";a:2:{s:6:"source";s:6:"xmlrpc";s:20:"authentication_types";a:1:{i:0;s:21:"username_and_password";}}s:4:"user";O:8:"WP_Error":2:{s:6:"errors";a:1:{s:16:"invalid_username";a:1:{i:0;s:56:"Unknown username. Check again or try your email address.";}}s:10:"error_data";a:0:{}}s:8:"username";s:11:"szirine.com";s:7:"user_id";i:0;s:6:"SERVER";a:37:{s:15:"SERVER_SOFTWARE";s:6:"Apache";s:11:"REQUEST_URI";s:11:"/xmlrpc.php";s:4:"PATH";s:60:"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin";s:11:"SCRIPT_NAME";s:11:"/xmlrpc.php";s:12:"QUERY_STRING";s:0:"";s:14:"REQUEST_METHOD";s:4:"POST";s:15:"SERVER_PROTOCOL";s:8:"HTTP/1.1";s:17:"GATEWAY_INTERFACE";s:7:"CGI/1.1";s:11:"REMOTE_PORT";s:5:"38018";s:15:"SCRIPT_FILENAME";s:38:"/home/dh_23wzed/szirine.com/xmlrpc.php";s:12:"SERVER_ADMIN";s:21:"webmaster@szirine.com";s:21:"CONTEXT_DOCUMENT_ROOT";s:27:"/home/dh_23wzed/szirine.com";s:14:"CONTEXT_PREFIX";s:0:"";s:14:"REQUEST_SCHEME";s:4:"http";s:13:"DOCUMENT_ROOT";s:27:"/home/dh_23wzed/szirine.com";s:11:"REMOTE_ADDR";s:14:"64.202.188.205";s:11:"SERVER_PORT";s:2:"80";s:11:"SERVER_ADDR";s:14:"173.236.188.87";s:11:"SERVER_NAME";s:11:"szirine.com";s:16:"SERVER_SIGNATURE";s:0:"";s:12:"CONTENT_TYPE";s:8:"text/xml";s:9:"HTTP_HOST";s:11:"szirine.com";s:15:"HTTP_USER_AGENT";s:90:"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.1) Gecko/2008070208 Firefox/3.0.1";s:11:"HTTP_ACCEPT";s:74:"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";s:15:"HTTP_CONNECTION";s:5:"close";s:20:"HTTP_ACCEPT_ENCODING";s:23:"identity, gzip, deflate";s:14:"CONTENT_LENGTH";s:3:"252";s:7:"DH_USER";s:9:"dh_23wzed";s:14:"ds_id_40644047";s:0:"";s:4:"dsid";s:8:"40644047";s:10:"SCRIPT_URI";s:29:"http://szirine.com/xmlrpc.php";s:10:"SCRIPT_URL";s:11:"/xmlrpc.php";s:9:"UNIQUE_ID";s:27:"XmvmbztjbkBzgs0Jzi2SmAAAAAk";s:9:"FCGI_ROLE";s:9:"RESPONDER";s:8:"PHP_SELF";s:11:"/xmlrpc.php";s:18:"REQUEST_TIME_FLOAT";s:15:"1584129647.1169";s:12:"REQUEST_TIME";s:10:"1584129647";}}', 'notice', datetime.datetime(2020, 3, 13, 20, 0, 47), datetime.datetime(2020, 3, 13, 20, 0, 47), 45156968, 45350320, 'http://szirine.com/xmlrpc.php', 1, 0, '64.202.188.205')]}}
+    ```
 
+    To return more results change the `length`, to change the position of the cursor, change the `offset` command. For example to return the 2nd and 3rd result from the query, use `offset=1` and `length=2`,
+    ```
+    $ python3 main.py transmit wp_ithemes '{"host":"123.45.123.123", "port":"30306"}' '{"auth": {"mysql_username": "user1","mysql_password": "Passw0rd", "mysql_hostname": "123.45.123.123", "mysql_database": "wp_test_db" } }' results "SELECT * FROM wp_itsec_logs WHERE Module = 'brute_force'" 1 2
 
-
-### Transmit
-
-
-
-
-[timestamp:value > '2020-03-17']
-$ python main.py translate wp_ithemes query "{}" "[timestamp > '2020-03-17']"
-
-
-# Run @localhost
-
-Use MySQL@localhost via docker to run the connector on localhost out of the Cloud Pak for Security, see https://hub.docker.com/_/mysql
-
-Run the mysql container and the phpmyadmin container,
-```
-$ docker run -d --name wp-mysql -v /Users/user1/dev/src/stix-shifter/mysql:/var/lib/mysql -p 6603:3306 -e MYSQL_ROOT_PASSWORD=Passw0rd -e MYSQL_DATABASE=wp_itsec_logs mysql:latest
-$ docker inspect wp-mysql | grep IPAddress
-$ docker run --name phpmyadmin -d --link wp-mysql:db -p 8080:80 phpmyadmin/phpmyadmin 
-```
-
-Load the sql from the `~/data` folder with test data.
-
-
-
-Use the results from the `translate query` command, to run the transmit query command,
-```
-$ python main.py translate wp_ithemes query "{}" "[id:value = 1]"
-```
-
-
-Run the `transmit ping` command,
-```
-$ python main.py transmit wp_ithemes '{"host":"localhost", "port":"6603"}' '{"auth": {"mysql_username": "root","mysql_password": "Passw0rd", "mysql_hostname": "localhost", "mysql_database": "remkoh_dev_2" } }' ping
-{'success': True, 'response': {'code': 200, 'results': 'Client is Connected to Data Source'}}
-```
-
-
-Run the `transmit results` command,
-```
-$ python main.py transmit wp_ithemes '{"host":"localhost", "port":"6603"}' '{"auth": {"mysql_username": "root","mysql_password": "Passw0rd", "mysql_hostname": "localhost", "mysql_database": "remkoh_dev_2" } }' results "SELECT * FROM wp_2d52qn_itsec_logs WHERE Id = '1'" 0 1
-
-{'success': True, 'response': {'code': 200, 'search_id': "SELECT * FROM wp_2d52qn_itsec_logs WHERE Id = '1'", 'results': {'columns': [('id', 8, None, None, None, None, 0, 16931), ('parent_id', 8, None, None, None, None, 0, 33), ('module', 253, None, None, None, None, 0, 16393), ('code', 253, None, None, None, None, 0, 16393), ('data', 252, None, None, None, None, 0, 4113), ('type', 253, None, None, None, None, 0, 16393), ('timestamp', 12, None, None, None, None, 0, 16521), ('init_timestamp', 12, None, None, None, None, 0, 129), ('memory_current', 8, None, None, None, None, 0, 33), ('memory_peak', 8, None, None, None, None, 0, 33), ('url', 253, None, None, None, None, 0, 1), ('blog_id', 8, None, None, None, None, 0, 16393), ('user_id', 8, None, None, None, None, 0, 16425), ('remote_ip', 253, None, None, None, None, 0, 1)], 'eof': {'warning_count': 0, 'status_flag': 1}}}}
-```
-
-### Execute
-
-
-
-## Maps
-
-### itsec_logs
-
-A simple `to_stix_map.json` file would be
-```
-{
-  "Id": {
-    "key": "id"
-  },
-  "ParentId": {
-    "key": "parent_id"
-  },
-  "Module": {
-    "key": "module"
-  },
-  "Code": {
-    "key": "code"
-  },
-  "Data": {
-    "key": "data"
-  },
-  "Type": {
-    "key": "type"
-  },
-  "Timestamp": {
-    "key": "timestamp"
-  },
-  "InitTimestamp": {
-    "key": "init_timestamp"
-  },
-  "MemoryCurrent": {
-    "key": "memory_current"
-  },
-  "MemoryPeak": {
-    "key": "memory_peak"
-  },
-  "Url": {
-    "key": "url"
-  },
-  "BlogId": {
-    "key": "blog_id"
-  },
-  "UserId": {
-    "key": "user_id"
-  },
-  "RemoteIp": {
-    "key": "remote_ip"
-  }
-}
-```
-
-A simple `from_stix_map.json` file would be
-```
-{
-  "id": {
-    "fields": {
-      "value": ["Id"]
-    }
-  },
-  "parent_id": {
-    "fields": {
-      "value": ["ParentId"]
-    }
-  },
-  "module": {
-    "fields": {
-      "value": ["Module"]
-    }
-  },
-  "code": {
-    "fields": {
-      "value": ["Code"]
-    }
-  },
-  "data": {
-    "fields": {
-      "value": ["Data"]
-    }
-  },
-  "type": {
-    "fields": {
-      "value": ["Type"]
-    }
-  },
-  "timestamp": {
-    "fields": {
-      "value": ["Timestamp"]
-    }
-  },
-  "init_timestamp": {
-    "fields": {
-      "value": ["InitTimestamp"]
-    }
-  },
-  "memory_current": {
-    "fields": {
-      "value": ["MemoryCurrent"]
-    }
-  },
-  "memory_peak": {
-    "fields": {
-      "value": ["MemoryPeak"]
-    }
-  },
-  "url": {
-    "fields": {
-      "value": ["Url"]
-    }
-  },
-  "blog_id": {
-    "fields": {
-      "value": ["BlogId"]
-    }
-  },
-  "user_id": {
-    "fields": {
-      "value": ["UserId"]
-    }
-  },
-  "remote_ip": {
-    "fields": {
-      "value": ["RemoteIp"]
-    }
-  }
-}
-```
-
-
-## Notes
-
-
-
-ACTION=<"query" or "result">
-PATTERN="[id = 1]"
-Define module name, authentication object, and connection object:
-```
-$ ACTION=query
-$ PATTERN="[id = 1]"
-$ MODULE=wp_ithemes
-$ AUTH='{"auth": {"username": "<mysql_username>","password": "<mysql_password>", "hostname": "<mysql_host>", "database": "<mysql_database>", "table": "wp_itsec_logs" }}'
-$ CONN='{"host": "<mysql_host>", "port": <mysql_port>}'
-
-$ python main.py translate $MODULE $ACTION '{}' $PATTERN <options>
-```
-
-```
-python main.py translate $MODULE $ACTION '{"host": "<mysql_host>", "port": <mysql_port>}'
-```
-
-
-python main.py translate wp_ithemes query "{}" "[id:value = '1']"
+    ```
