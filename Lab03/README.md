@@ -289,7 +289,11 @@ The `transmit` command can be used with the following methods:
     translated native query as input parameter in the `transmit results` 
     command, using `offset=0` and `length=1`.
     ```
-    $ python3 main.py transmit wp_ithemes '{"host":"123.45.123.123", "port":"30306"}' '{"auth": {"mysql_username": "user1","mysql_password": "Passw0rd", "mysql_hostname": "123.45.123.123", "mysql_database": "wp_test_db" } }' results "SELECT * FROM wp_itsec_logs WHERE Module = 'brute_force'" 0 1
+    $ python3 main.py transmit wp_ithemes '{"host":"123.45.123.123", 
+    "port":"30306"}' '{"auth": {"mysql_username": "user1","mysql_password": 
+    "Passw0rd", "mysql_hostname": "123.45.123.123", "mysql_database": 
+    "wp_test_db" } }' results "SELECT * FROM wp_itsec_logs WHERE Module = 
+    'brute_force'" 0 1
 
     {'success': True, 'response': {'code': 200, 'search_id': "SELECT * FROM 
     wp_itsec_logs WHERE Module = 'brute_force' limit 1 offset 0", 'results': 
